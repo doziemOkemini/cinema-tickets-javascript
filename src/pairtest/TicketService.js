@@ -12,25 +12,10 @@ export default class TicketService {
     ADULT: 25,
     CHILD: 15,
     INFANT: 0
-  };
+  }; 
   #MAX_TiCKETS = 25;
   #seatReservationService = new SeatReservationService();
   #ticketPaymentService = new TicketPaymentService();
-
-  /*#totalTickets = 0; #adultTickets = 0;
-  #totalAmount = 0; #totalSeats = 0;
-
-  #makePayment(accountId, totalAmount) {
-    const paymentService = new TicketPaymentService();
-    paymentService.makePayment(accountId, totalAmount);
-  }
-
-  #reserveSeats(accountId, totalSeats){
-    if(totalSeats > 0){
-      const seatService = new SeatReservationService();
-      seatService.reserveSeat(accountId, totalSeats);
-    }
-  }*/
 
   #makePayment(accountId, totalAmount) {
     this.#ticketPaymentService.makePayment(accountId, totalAmount)
@@ -44,8 +29,7 @@ export default class TicketService {
 
   purchaseTickets(accountId, ...ticketTypeRequests) {
     if(accountId <= 0){
-      // throws InvalidPurchaseException
-      throw new InvalidPurchaseException("ID");
+      throw new InvalidPurchaseException("Invalid account ID: Account ID must be a positive integer");
     }
 
   let totalTickets = 0, adultTickets = 0, totalAmount = 0, totalSeats = 0;
@@ -54,7 +38,9 @@ export default class TicketService {
       const type = String(request.getTicketType() || "").toUpperCase();
       const quantity = request.getNoOfTickets();
 
-      totalTickets += quantity;
+      if(type !== "INFANT"){
+         totalTickets += quantity;
+      }
       totalAmount += this.#ticketPrices[type] * quantity;
 
       if(type === "ADULT"){
@@ -62,10 +48,8 @@ export default class TicketService {
         totalSeats += quantity;
       }else if(type === "CHILD") {
         totalSeats += quantity;
-        // console.log(totalSeats);
       }
     }
-    console.log(totalSeats);
 
     if(totalTickets > this.#MAX_TiCKETS) {
       throw new InvalidPurchaseException(`Cannot purchase more than ${this.#MAX_TiCKETS} tickets`);
@@ -79,17 +63,4 @@ export default class TicketService {
     this.#reserveSeats(accountId, totalSeats)
   }
 }
-
-const ticketService = new TicketService();
-/*ticketService.purchaseTickets(1,  new TicketTypeRequest("ADULT", 2), 
-                                  new TicketTypeRequest("CHILD", 1),
-                                  new TicketTypeRequest("INFANT", 1));*/
-
-ticketService.purchaseTickets(2, new TicketTypeRequest("ADULT", 10),
-                                 new TicketTypeRequest("CHILD", 10),
-                                 new TicketTypeRequest("INFANT", 5));
-// ticketService.purchaseTickets(4,new TicketTypeRequest("CHILD", 2));
-// ticketService.purchaseTickets( 5, new TicketTypeRequest("INFANT", 1));
-
-// ticketService.purchaseTickets(1, new TicketTypeRequest("ADULT", 1));
-                                
+                              
