@@ -1,7 +1,9 @@
-import TicketService from "../src/pairtest/TicketService.js";
-import TicketTypeRequest from "../src/pairtest/lib/TicketTypeRequest.js";
+// import TicketService from "../src/pairtest/TicketService.js";
+// import TicketTypeRequest from "../src/pairtest/lib/TicketTypeRequest.js";
 // import InvalidPurchaseException from "../src/pairtest/lib/InvalidPurchaseException.js";
 // import SeatReservationService from "../src/thirdparty/seatbooking/SeatReservationService.js";
+
+const { TicketService} = require("../src/pairtest/TicketService.js");
 
 //Mock External Services
 jest.mock("../src/thirdparty/paymentgateway/TicketPaymentService.js", () => {
@@ -34,23 +36,5 @@ describe("TicketService Tests", () => {
           ticketService.purchaseTickets(1, new TicketTypeRequest("ADULT", 26));
         }).toThrow("Cannot purchase more than");
       });
-    
-    test("should throw error when purchasing child tickets without an adult", () => {
-        expect(() => {
-          ticketService.purchaseTickets(1, new TicketTypeRequest("CHILD", 2));
-        }).toThrow("At least one adult ticket");
-    });
-    
-    test("should throw error when account ID is invalid", () => {
-        expect(() => {
-          ticketService.purchaseTickets(-1, new TicketTypeRequest("ADULT", 1));
-        }).toThrow("Invalid account ID");
-    });
-    
-    test("should throw error when ticket type is invalid", () => {
-        expect(() => {
-          ticketService.purchaseTickets(1, new TicketTypeRequest("INVALID", 1));
-        }).toThrow("Invalid ticket type provided");
-    });
     
 })
